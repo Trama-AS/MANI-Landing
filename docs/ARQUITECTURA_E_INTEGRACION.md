@@ -50,3 +50,16 @@ Cuando la aplicación se ejecuta en un dominio distinto de `localhost` y no exis
 
 - **Linter**: `oxlint` (`npm run lint`) valida reglas de React, hooks e importaciones en menos de 100 ms.
 - **Bundler**: `vite build` (`npm run build`) empaqueta y minifica los recursos estáticos en `dist/` con soporte nativo para ES Modules.
+
+---
+
+## 5. Topología de Despliegue Unificado (`/` + `/app/`)
+
+En entornos integrados (Nginx / Cloudflare Workers), ambos artefactos estáticos se ensamblan bajo un mismo origen para evitar fricción de CORS y compartir dominio público:
+
+1. **Raíz (`/`)**: sirve el bundle compilado de `MANI-Landing/dist` con `Cache-Control: no-cache, no-store, must-revalidate` en `index.html`.
+2. **Subruta (`/app/`)**: sirve la compilación de `MANI-Flutter` generada con `flutter build web --release --base-href /app/`.
+3. **Fallback SPA dual**:
+   - Cualquier ruta bajo `/app/*` no encontrada en estáticos resuelve a `/app/index.html` (router de Flutter Web).
+   - Cualquier otra ruta bajo `/*` resuelve a `/index.html` (Landing Page).
+
