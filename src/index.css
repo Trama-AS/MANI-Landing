@@ -1,0 +1,170 @@
+:root {
+  /* Brand Color Palette */
+  --color-yellow: #F2B705;
+  --color-yellow-light: #FDE896;
+  --color-yellow-hover: #DFA400;
+  
+  --color-navy: #1B2A4A;
+  --color-navy-dark: #0F192E;
+  --color-navy-light: #2C4372;
+  --color-navy-muted: #536485;
+  
+  --color-cream: #FBF3E4;
+  --color-cream-card: #FFFFFF;
+  --color-cream-dark: #F3E5CD;
+  --color-cream-soft: #FFF9EE;
+  
+  --color-red: #E4572E;
+  --color-red-hover: #CC441C;
+  --color-red-light: #FDE5DE;
+
+  --color-green: #10B981;
+  --color-green-light: #D1FAE5;
+  
+  /* Fonts */
+  --font-display: 'Fredoka', cursive, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  
+  /* Borders & Shadows (Retro Comic / Neo-Brutalist) */
+  --border-thick: 3px solid var(--color-navy);
+  --border-medium: 2.5px solid var(--color-navy);
+  --border-thin: 1.5px solid var(--color-navy);
+  
+  --shadow-sm: 3px 3px 0px var(--color-navy);
+  --shadow-md: 5px 5px 0px var(--color-navy);
+  --shadow-lg: 8px 8px 0px var(--color-navy);
+  --shadow-hover: 2px 2px 0px var(--color-navy);
+  --shadow-active: 0px 0px 0px var(--color-navy);
+  
+  --shadow-red-md: 5px 5px 0px var(--color-red);
+  --shadow-yellow-md: 5px 5px 0px var(--color-yellow);
+  
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 9999px;
+  
+  /* Transitions */
+  --transition-bounce: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-smooth: all 0.25s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-cream);
+  color: var(--color-navy);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image: radial-gradient(rgba(27, 42, 74, 0.05) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--color-navy);
+  line-height: 1.2;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+img, video {
+  max-width: 100%;
+  display: block;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Comic Utilities */
+.comic-box {
+  background: var(--color-cream-card);
+  border: var(--border-thick);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-bounce);
+}
+
+.comic-box:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.comic-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 1rem;
+  border: var(--border-medium);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  background: white;
+}
+
+/* Section Spacing */
+.section-padding {
+  padding: 5rem 0;
+}
+
+@media (max-width: 768px) {
+  .section-padding {
+    padding: 3.5rem 0;
+  }
+}
+
+/* Animations */
+@keyframes floatWobble {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1.5deg);
+  }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+.animate-float {
+  animation: floatWobble 4s ease-in-out infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 3s ease-in-out infinite;
+}
