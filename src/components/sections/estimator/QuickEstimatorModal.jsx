@@ -1,38 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../../../context/AppContext';
 import { SERVICES_DATA } from '../../../constants/servicesData';
+import { ALCANCES, AVISO_ESTIMACION, URGENCIAS, estimarRango, formatearCop } from '../../../utils/estimator';
+import { rutaFlutter } from '../../../utils/flutterRoutes';
 import { Button } from '../../common/Button';
-import { Badge } from '../../common/Badge';
 import { 
   X, 
   Wrench, 
   Zap, 
   ExternalLink, 
-  ShieldCheck, 
-  Clock, 
-  CheckCircle2,
-  Calendar 
+  Info
 } from 'lucide-react';
 
 export const QuickEstimatorModal = () => {
   const { isEstimatorOpen, closeEstimator, activeServiceId, openFlutterApp } = useApp();
 
-  const [selectedServiceId, setSelectedServiceId] = useState('plomeria');
+  // La categoría elegida en el modal vale mientras no se abra desde otra tarjeta (activeServiceId).
+  const [eleccion, setEleccion] = useState({ origen: activeServiceId, id: null });
   const [urgency, setUrgency] = useState('hoy');
-
-  useEffect(() => {
-    if (activeServiceId) {
-      setSelectedServiceId(activeServiceId);
-    }
-  }, [activeServiceId]);
+  const [alcance, setAlcance] = useState('sencillo');
 
   if (!isEstimatorOpen) return null;
 
+  const selectedServiceId =
+    (eleccion.origen === activeServiceId && eleccion.id) || activeServiceId || 'plomeria';
+  const setSelectedServiceId = (id) => setEleccion({ origen: activeServiceId, id });
+
   const currentService = SERVICES_DATA.find((s) => s.id === selectedServiceId) || SERVICES_DATA[0];
+  const rango = estimarRango(currentService, urgency, alcance);
 
   const handleConfirm = () => {
     closeEstimator();
-    openFlutterApp(`booking?service=${selectedServiceId}&urgency=${urgency}`);
+    openFlutterApp(rutaFlutter('login', { servicio: currentService.id, urgencia: urgency, alcance }));
   };
 
   return (
@@ -105,10 +104,10 @@ export const QuickEstimatorModal = () => {
           </div>
           <div>
             <h3 style={{ fontSize: '1.6rem', textTransform: 'uppercase', lineHeight: 1.1 }}>
-              Solicitud de Servicio
+              Estima tu servicio
             </h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--color-navy-muted)' }}>
-              Elige tu categoría y conecta de inmediato con la App Web
+              Calcula un rango de referencia y continúa en la App Web
             </p>
           </div>
         </div>
@@ -150,11 +149,7 @@ export const QuickEstimatorModal = () => {
             2. ¿Para cuándo requieres el servicio?
           </label>
           <div style={{ display: 'flex', gap: '0.6rem' }}>
-            {[
-              { id: 'hoy', label: '⚡ Hoy Mismo' },
-              { id: 'manana', label: '📅 Mañana' },
-              { id: 'programado', label: '🗓️ Esta Semana' }
-            ].map((item) => (
+            {URGENCIAS.map((item) => (
               <button
                 key={item.id}
                 type="button"
@@ -178,14 +173,48 @@ export const QuickEstimatorModal = () => {
           </div>
         </div>
 
-        {/* 3. Resumen del Servicio */}
+        {/* 3. Alcance del trabajo */}
+        <div style={{ marginBottom: '1.2rem' }}>
+          <label style={{ display: 'block', fontFamily: 'var(--font-display)', fontWeight: '700', fontSize: '0.95rem', marginBottom: '0.5rem' }}>
+            3. ¿Qué tan grande es el trabajo?
+          </label>
+          <div style={{ display: 'flex', gap: '0.6rem' }}>
+            {ALCANCES.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                data-testid={`alcance-${item.id}`}
+                onClick={() => setAlcance(item.id)}
+                style={{
+                  flex: 1,
+                  padding: '0.5rem',
+                  borderRadius: 'var(--radius-sm)',
+                  border: alcance === item.id ? '2.5px solid var(--color-navy)' : '1.5px solid #CBD5E1',
+                  backgroundColor: alcance === item.id ? 'var(--color-yellow)' : '#F8FAFC',
+                  color: 'var(--color-navy)',
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: '700',
+                  fontSize: '0.85rem',
+                  cursor: 'pointer'
+                }}
+              >
+                {item.label}
+                <span style={{ display: 'block', fontFamily: 'var(--font-body)', fontWeight: '500', fontSize: '0.7rem', color: 'var(--color-navy-muted)' }}>
+                  {item.detalle}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 4. Rango estimado */}
         <div
           style={{
-            backgroundColor: 'var(--color-cream-soft)',
+            backgroundColor: 'var(--color-cream)',
             border: '2.5px solid var(--color-navy)',
-            borderRadius: 'var(--radius-md)',
-            padding: '1.2rem',
-            marginBottom: '1.5rem'
+            borderRadius: 'var(--radius-sm)',
+            padding: '1rem 1.2rem',
+            marginBottom: '1.2rem'
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
@@ -196,34 +225,30 @@ export const QuickEstimatorModal = () => {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-            <span style={{ color: 'var(--color-navy-muted)', fontSize: '0.9rem' }}>Modalidad:</span>
-            <span style={{ fontWeight: '700', fontSize: '0.9rem' }}>Atención a Domicilio</span>
+            <span style={{ color: 'var(--color-navy-muted)', fontSize: '0.9rem' }}>Tarifa base:</span>
+            <span style={{ fontWeight: '700', fontSize: '0.9rem' }}>{formatearCop(currentService.tarifaBase)}</span>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-            <span style={{ color: 'var(--color-navy-muted)', fontSize: '0.9rem' }}>Garantía:</span>
-            <span style={{ fontWeight: '700', color: '#10B981', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-              <CheckCircle2 size={15} /> 100% Escrita MANI
-            </span>
-          </div>
-
-          <div
-            style={{
-              borderTop: '2px dashed rgba(27, 42, 74, 0.2)',
-              paddingTop: '0.6rem',
-              marginTop: '0.6rem',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.6rem' }}>
             <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.95rem', fontWeight: '800' }}>
-              Asignación:
+              Rango estimado:
             </span>
-            <span style={{ fontFamily: 'var(--font-display)', fontSize: '0.95rem', fontWeight: '800', color: 'var(--color-red)' }}>
-              Técnico Verificado en tu Zona
+            <span
+              data-testid="rango-estimado"
+              style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: '800', color: 'var(--color-red)' }}
+            >
+              {formatearCop(rango.min)} – {formatearCop(rango.max)}
             </span>
           </div>
+
+          <p
+            data-testid="aviso-estimacion"
+            role="note"
+            style={{ display: 'flex', gap: '0.4rem', alignItems: 'flex-start', fontSize: '0.75rem', color: 'var(--color-navy)', marginTop: '0.8rem', lineHeight: 1.4 }}
+          >
+            <Info size={14} style={{ flexShrink: 0, marginTop: '0.1rem' }} />
+            <span>{AVISO_ESTIMACION}</span>
+          </p>
         </div>
 
         {/* Botón de Confirmación Directo a Flutter Web */}
@@ -235,11 +260,11 @@ export const QuickEstimatorModal = () => {
           iconRight={ExternalLink}
           onClick={handleConfirm}
         >
-          Continuar y Agendar en la App Web
+          Continuar en la App Web
         </Button>
 
         <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--color-navy-muted)', marginTop: '0.8rem' }}>
-          🔒 Podrás especificar dirección, detalles del arreglo y confirmar tu cita desde la app web.
+          🔒 Inicia sesión o regístrate para describir el arreglo y recibir la cotización formal.
         </p>
       </div>
     </div>
