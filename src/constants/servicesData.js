@@ -1,3 +1,5 @@
+// tarifaBase: valor de referencia en COP de la visita con el arreglo más sencillo.
+// Es informativo para el visitante; el precio real lo fija la cotización en la plataforma.
 export const SERVICES_DATA = [
   {
     id: 'plomeria',
@@ -7,6 +9,7 @@ export const SERVICES_DATA = [
     iconName: 'Droplets',
     badge: 'Más Solicitado',
     estimatedTime: '1 - 2 hrs',
+    tarifaBase: 80000,
     popularTags: ['Fuga de agua', 'Grifo goteando', 'Destape lavamanos', 'Calentador'],
     color: '#3B82F6'
   },
@@ -18,6 +21,7 @@ export const SERVICES_DATA = [
     iconName: 'Zap',
     badge: 'Certificados',
     estimatedTime: '1 - 3 hrs',
+    tarifaBase: 90000,
     popularTags: ['Cortocircuito', 'Instalar lámpara', 'Tomas quemadas', 'Breakers'],
     color: '#F59E0B'
   },
@@ -29,6 +33,7 @@ export const SERVICES_DATA = [
     iconName: 'Hammer',
     badge: 'Acabados Finos',
     estimatedTime: '2 - 4 hrs',
+    tarifaBase: 100000,
     popularTags: ['Puerta caída', 'Repisas flotantes', 'Armado de muebles', 'Bisagras'],
     color: '#D97706'
   },
@@ -40,6 +45,7 @@ export const SERVICES_DATA = [
     iconName: 'Wrench',
     badge: 'Multiusos',
     estimatedTime: '1 - 2 hrs',
+    tarifaBase: 70000,
     popularTags: ['Soporte de TV', 'Cortinas y persianas', 'Cuadros y repisas', 'Silicona'],
     color: '#10B981'
   },
@@ -51,6 +57,7 @@ export const SERVICES_DATA = [
     iconName: 'KeyRound',
     badge: 'Emergencia 24/7',
     estimatedTime: '45 - 60 min',
+    tarifaBase: 75000,
     popularTags: ['Cambio de chapa', 'Puerta trancada', 'Cerradura digital', 'Duplicados'],
     color: '#8B5CF6'
   },
@@ -62,6 +69,7 @@ export const SERVICES_DATA = [
     iconName: 'Paintbrush',
     badge: 'Alta Calidad',
     estimatedTime: '3 - 6 hrs',
+    tarifaBase: 150000,
     popularTags: ['Resane de grietas', 'Pintura habitación', 'Retoque de muros', 'Techos'],
     color: '#EC4899'
   }

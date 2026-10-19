@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { APP_CONFIG } from '../config/appConfig';
+import { urlFlutter } from '../utils/flutterRoutes';
 
 const AppContext = createContext(null);
 
@@ -37,9 +38,8 @@ export const AppProvider = ({ children }) => {
 
   const openFlutterApp = (extraPath = '') => {
     try {
-      const cleanBase = flutterWebUrl.replace(/\/+$/, '');
-      const cleanPath = extraPath ? `/${extraPath.replace(/^\/+/, '')}` : '';
-      const targetUrl = `${cleanBase}${cleanPath}`;
+      // extraPath sale de rutaFlutter() (src/utils/flutterRoutes.js): solo rutas públicas de MANI-Flutter.
+      const targetUrl = urlFlutter(flutterWebUrl, extraPath);
       
       showToast(`🚀 Abriendo MANI Web (${targetUrl})...`);
       

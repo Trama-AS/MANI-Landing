@@ -90,10 +90,12 @@ La comunicación entre `MANI-Landing` y `MANI-Flutter` se gestiona mediante `App
 
 | Acción en Landing | Método (`useFlutterWeb`) | Ruta generada hacia Flutter Web |
 | :--- | :--- | :--- |
-| Abrir aplicación general | `openFlutterApp()` | `{FLUTTER_WEB_URL}` |
-| Seleccionar categoría de servicio | `goToService(serviceId)` | `{FLUTTER_WEB_URL}/?service={serviceId}` |
-| Iniciar reserva desde cotizador/CTA | `goToBooking(serviceId)` | `{FLUTTER_WEB_URL}/booking?service={serviceId}` |
-| Consultar perfil de aliado destacado | `goToExpert(expertId)` | `{FLUTTER_WEB_URL}/experts/{expertId}` |
+| Abrir aplicación general | `openFlutterApp()` | `{FLUTTER_WEB_URL}` (Flutter redirige a `/login`) |
+| Seleccionar categoría de servicio | `goToService(serviceId)` | `{FLUTTER_WEB_URL}/login?servicio={serviceId}` |
+| Continuar desde el estimador | `goToBooking(serviceId, { urgencia, alcance })` | `{FLUTTER_WEB_URL}/login?servicio={serviceId}&urgencia=…&alcance=…` |
+| Reservar con un aliado destacado | `goToExpert(expertId)` | `{FLUTTER_WEB_URL}/login?aliado={expertId}` |
+
+Solo se usan rutas públicas que existen en `MANI-Flutter`; el contrato vive en `src/utils/flutterRoutes.js` (ver `docs/ARQUITECTURA_E_INTEGRACION.md` §3).
 
 ### Resolución dinámica del destino (`flutterWebUrl`)
 1. **Variable de entorno**: `VITE_FLUTTER_WEB_URL` si está definida en tiempo de compilación.
@@ -120,6 +122,7 @@ La aplicación quedará disponible en `http://localhost:5173`.
 ### Verificación de linter y compilación de producción
 ```bash
 npm run lint
+npm test
 npm run build
 npm run preview
 ```
