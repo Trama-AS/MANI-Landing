@@ -8,6 +8,11 @@ on:
       - develop
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+*'
+  pull_request:
+    branches:
+      - main
+      - release
+      - develop
   workflow_dispatch:
 
 env:
@@ -15,9 +20,45 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  # En PR no se publica: se compila con una URL de prueba y se comprueba que quedó en el bundle.
+  verify-pr:
+    name: Verify Landing Image (PR)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      URL_PRUEBA: http://flutter-web.ci.invalid:8080
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Lint & test
+        run: |
+          npm ci
+          npm run lint
+          npm test
+
+      - name: Build image with a test Flutter Web URL
+        run: docker build --build-arg VITE_FLUTTER_WEB_URL="$URL_PRUEBA" -t mani-landing:pr .
+
+      - name: Check the URL reached the bundle
+        run: docker run --rm --entrypoint grep mani-landing:pr -rqF "$URL_PRUEBA" /usr/share/nginx/html/assets
+
   build-and-push:
     name: Build & Push Landing Image
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    # Ambiente por rama (ADR-0028): develop → dev, release → qa, main y tags v* → prod.
+    # Cada GitHub Environment define la variable FLUTTER_WEB_URL (ver README §6).
+    environment: ${{ (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) && 'prod' || github.ref == 'refs/heads/release' && 'qa' || 'dev' }}
     permissions:
       contents: read
       packages: write
@@ -25,6 +66,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Check FLUTTER_WEB_URL
+        env:
+          FLUTTER_WEB_URL: ${{ vars.FLUTTER_WEB_URL }}
+        run: |
+          if [ -z "$FLUTTER_WEB_URL" ]; then
+            echo "::warning title=FLUTTER_WEB_URL sin definir::El environment no define FLUTTER_WEB_URL; la landing usará el respaldo del navegador (mismo host, puerto 8080)."
+          else
+            echo "Flutter Web: $FLUTTER_WEB_URL"
+          fi
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -57,5 +108,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VITE_FLUTTER_WEB_URL=${{ vars.FLUTTER_WEB_URL }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
