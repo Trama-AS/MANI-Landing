@@ -42,7 +42,7 @@ El hook `src/hooks/useFlutterWeb.js` normaliza la URL base (removiendo barras fi
 - **Reserva con categoría preseleccionada**: `<flutterWebUrl>/booking?service=<serviceId>`
 - **Detalle de aliado**: `<flutterWebUrl>/experts/<expertId>`
 
-Cuando la aplicación se ejecuta en un dominio distinto de `localhost` y no existe una variable `VITE_FLUTTER_WEB_URL` explícita, `appConfig.js` y `AppContext.jsx` resuelven automáticamente `${window.location.origin}/app` para evitar apuntar por error a `localhost:8080` en entornos desplegados.
+La imagen Docker recibe `VITE_FLUTTER_WEB_URL` como `--build-arg` desde la variable `FLUTTER_WEB_URL` del GitHub Environment de cada rama (README §6). Si no llega, `src/config/flutterWebUrl.js` resuelve el respaldo para no apuntar por error a `localhost:8080` en entornos desplegados: con la landing en un puerto propio (`:3001` en DEV/QA/PROD) usa el mismo host en `:8080`; en el puerto estándar (despliegue unificado, §5) usa `${window.location.origin}/app`.
 
 ---
 

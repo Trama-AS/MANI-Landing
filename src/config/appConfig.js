@@ -1,3 +1,5 @@
+import { resolverUrlFlutter } from './flutterWebUrl';
+
 /**
  * Configuración central de la Landing Page MANI
  * Permite definir dinámicamente la URL de destino de Flutter Web
@@ -8,8 +10,11 @@ export const APP_CONFIG = {
   headline: 'Soluciones para tu hogar',
   subheadline: 'Expertos verificados en quienes puedes confiar.',
   
-  // URL por defecto de la aplicación Web (detecta automáticamente producción vs desarrollo local)
-  flutterWebUrl: import.meta.env.VITE_FLUTTER_WEB_URL || (typeof window !== 'undefined' && window.location.hostname !== 'localhost' ? `${window.location.origin}/app` : 'http://localhost:8080'),
+  // URL de la aplicación Web: la de compilación del ambiente o el respaldo de src/config/flutterWebUrl.js
+  flutterWebUrl: resolverUrlFlutter(
+    import.meta.env.VITE_FLUTTER_WEB_URL,
+    typeof window !== 'undefined' ? window.location : undefined
+  ),
   
   // Enlaces de soporte y contacto
   supportWhatsApp: 'https://wa.me/573001234567?text=Hola%20MANI,%20necesito%20información%20sobre%20un%20servicio',
