@@ -1,18 +1,15 @@
+import { urlFlutterInicial } from '../config/flutterWebUrl';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { APP_CONFIG } from '../config/appConfig';
+import { urlFlutter } from '../utils/flutterRoutes';
 
 const AppContext = createContext(null);
 
 export const AppProvider = ({ children }) => {
   // Estado para la URL de Flutter Web con persistencia en localStorage
-  const [flutterWebUrl, setFlutterWebUrl] = useState(() => {
-    const saved = localStorage.getItem('mani_flutter_web_url');
-    const isProduction = typeof window !== 'undefined' && window.location.hostname !== 'localhost';
-    if (isProduction && saved && saved.includes('localhost')) {
-      return `${window.location.origin}/app`;
-    }
-    return saved || APP_CONFIG.flutterWebUrl;
-  });
+  const [flutterWebUrl, setFlutterWebUrl] = useState(() =>
+    urlFlutterInicial(localStorage.getItem('mani_flutter_web_url'), APP_CONFIG.flutterWebUrl, window.location)
+  );
 
   // Modal de cotización rápida
   const [isEstimatorOpen, setIsEstimatorOpen] = useState(false);
@@ -25,7 +22,12 @@ export const AppProvider = ({ children }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('mani_flutter_web_url', flutterWebUrl);
+    // Solo se guarda un ajuste manual: el valor por defecto lo fija la compilación de cada ambiente.
+    if (flutterWebUrl === APP_CONFIG.flutterWebUrl) {
+      localStorage.removeItem('mani_flutter_web_url');
+    } else {
+      localStorage.setItem('mani_flutter_web_url', flutterWebUrl);
+    }
   }, [flutterWebUrl]);
 
   const showToast = (message, duration = 3000) => {
@@ -37,9 +39,8 @@ export const AppProvider = ({ children }) => {
 
   const openFlutterApp = (extraPath = '') => {
     try {
-      const cleanBase = flutterWebUrl.replace(/\/+$/, '');
-      const cleanPath = extraPath ? `/${extraPath.replace(/^\/+/, '')}` : '';
-      const targetUrl = `${cleanBase}${cleanPath}`;
+      // extraPath sale de rutaFlutter() (src/utils/flutterRoutes.js): solo rutas públicas de MANI-Flutter.
+      const targetUrl = urlFlutter(flutterWebUrl, extraPath);
       
       showToast(`🚀 Abriendo MANI Web (${targetUrl})...`);
       

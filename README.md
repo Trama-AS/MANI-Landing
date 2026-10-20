@@ -90,17 +90,20 @@ La comunicación entre `MANI-Landing` y `MANI-Flutter` se gestiona mediante `App
 
 | Acción en Landing | Método (`useFlutterWeb`) | Ruta generada hacia Flutter Web |
 | :--- | :--- | :--- |
-| Abrir aplicación general | `openFlutterApp()` | `{FLUTTER_WEB_URL}` |
-| Seleccionar categoría de servicio | `goToService(serviceId)` | `{FLUTTER_WEB_URL}/?service={serviceId}` |
-| Iniciar reserva desde cotizador/CTA | `goToBooking(serviceId)` | `{FLUTTER_WEB_URL}/booking?service={serviceId}` |
-| Consultar perfil de aliado destacado | `goToExpert(expertId)` | `{FLUTTER_WEB_URL}/experts/{expertId}` |
+| Abrir aplicación general | `openFlutterApp()` | `{FLUTTER_WEB_URL}` (Flutter redirige a `/login`) |
+| Seleccionar categoría de servicio | `goToService(serviceId)` | `{FLUTTER_WEB_URL}/login?servicio={serviceId}` |
+| Continuar desde el estimador | `goToBooking(serviceId, { urgencia, alcance })` | `{FLUTTER_WEB_URL}/login?servicio={serviceId}&urgencia=…&alcance=…` |
+| Reservar con un aliado destacado | `goToExpert(expertId)` | `{FLUTTER_WEB_URL}/login?aliado={expertId}` |
+
+Solo se usan rutas públicas que existen en `MANI-Flutter`; el contrato vive en `src/utils/flutterRoutes.js` (ver `docs/ARQUITECTURA_E_INTEGRACION.md` §3).
 
 ### Resolución dinámica del destino (`flutterWebUrl`)
-1. **Variable de entorno**: `VITE_FLUTTER_WEB_URL` si está definida en tiempo de compilación.
-2. **Persistencia local / Ajuste en vivo**: desde el botón de configuración de la barra superior (`FlutterSettingsBar`) se puede modificar en caliente el puerto o dominio de `MANI-Flutter` (almacenado en `localStorage` bajo la clave `mani_flutter_web_url`).
-3. **Fallback automático por ambiente**:
+1. **Variable de entorno**: `VITE_FLUTTER_WEB_URL` si está definida en tiempo de compilación (en la imagen Docker llega como `--build-arg`, ver §6).
+2. **Persistencia local / Ajuste en vivo**: desde el botón de configuración de la barra superior (`FlutterSettingsBar`) se puede modificar en caliente el puerto o dominio de `MANI-Flutter` (almacenado en `localStorage` bajo la clave `mani_flutter_web_url`). Solo se guarda un ajuste manual; los valores que dejaron versiones anteriores (`localhost` fuera de un equipo local o `<origen de la landing>/app`) se descartan.
+3. **Fallback automático por ambiente** (`src/config/flutterWebUrl.js`, probado en `tests/flutterWebUrl.test.js`):
    - En desarrollo (`localhost`): apunta a `http://localhost:8080` (puerto expuesto por el contenedor de `MANI-Flutter`).
-   - En despliegue compartido: apunta a `${window.location.origin}/app`.
+   - Landing publicada en un puerto propio (DEV/QA/PROD: `:3001`): apunta al mismo host en `:8080`, donde corre `mani-flutter-web`.
+   - Landing en el puerto estándar (despliegue unificado detrás de un proxy): apunta a `${window.location.origin}/app`.
 
 ---
 
@@ -120,6 +123,7 @@ La aplicación quedará disponible en `http://localhost:5173`.
 ### Verificación de linter y compilación de producción
 ```bash
 npm run lint
+npm test
 npm run build
 npm run preview
 ```
@@ -132,6 +136,27 @@ Puedes crear un archivo `.env` en la raíz del proyecto para personalizar el des
 
 ```env
 VITE_FLUTTER_WEB_URL=http://localhost:8080
+```
+
+### URL de Flutter Web por ambiente (imagen Docker)
+
+Vite incrusta `VITE_FLUTTER_WEB_URL` en el bundle al compilar, así que la URL debe llegar al `docker build`, no al contenedor en ejecución. El `Dockerfile` la recibe como `ARG` y el workflow `.github/workflows/docker-publish.yml` la pasa desde la variable `FLUTTER_WEB_URL` del GitHub Environment de cada rama:
+
+| Rama / tag | Tag de imagen | GitHub Environment | Variable a crear | Valor esperado |
+| :--- | :--- | :--- | :--- | :--- |
+| `develop` | `:develop` | `dev` | `FLUTTER_WEB_URL` | URL pública de `mani-flutter-web` en el host DEV (puerto `8080`) |
+| `release` | `:staging` | `qa` | `FLUTTER_WEB_URL` | URL pública de `mani-flutter-web` en el host QA (puerto `8080`) |
+| `main` y tags `v*` | `:latest`, `:x.y.z` | `prod` | `FLUTTER_WEB_URL` | URL pública de `mani-flutter-web` en el host PROD (puerto `8080`) |
+
+- Se crea en *Settings → Environments → `<ambiente>` → Environment variables* (es una variable, no un secreto: queda visible en el bundle). Los hosts de cada ambiente están en `MANI-docs/product/DOCUMENTO_INFRAESTRUCTURA_V3.md` §3; no se versionan aquí.
+- Si el environment restringe ramas (*Deployment branches*), `prod` debe admitir `main` y los tags `v*`.
+- Si la variable falta, el workflow lo avisa con un *warning* y la landing usa el respaldo del navegador (§4): mismo host, puerto `8080`.
+- En cada PR el job `verify-pr` corre lint y pruebas, compila la imagen con una URL de prueba y comprueba que quedó en el bundle.
+
+Compilación manual de la imagen de un ambiente:
+
+```bash
+docker build --build-arg VITE_FLUTTER_WEB_URL=http://<host>:8080 -t mani-landing .
 ```
 
 El comando `npm run build` genera los artefactos estáticos optimizados en la carpeta `dist/`, listos para servirse desde Nginx, GitHub Pages, Vercel o cualquier CDN frente al Gateway y al contenedor de `MANI-Flutter`.

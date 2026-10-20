@@ -3,6 +3,7 @@ import { Card } from '../../common/Card';
 import { Button } from '../../common/Button';
 import { Badge } from '../../common/Badge';
 import { useApp } from '../../../context/AppContext';
+import { rutaFlutter } from '../../../utils/flutterRoutes';
 import { Star, ShieldCheck, Award, ExternalLink } from 'lucide-react';
 
 export const ExpertCard = ({ expert }) => {
@@ -135,7 +136,7 @@ export const ExpertCard = ({ expert }) => {
           size="md"
           fullWidth
           iconRight={ExternalLink}
-          onClick={() => openFlutterApp(`experts/${expert.id}`)}
+          onClick={() => openFlutterApp(rutaFlutter('login', { aliado: expert.id }))}
         >
           Reservar con {expert.name}
         </Button>
