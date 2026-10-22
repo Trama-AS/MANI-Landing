@@ -7,6 +7,11 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+
+# URL de MANI-Flutter Web del ambiente; Vite la incrusta en el bundle al compilar.
+# Vacía: la landing usa el respaldo de src/config/flutterWebUrl.js (mismo host, puerto 8080).
+ARG VITE_FLUTTER_WEB_URL=""
+ENV VITE_FLUTTER_WEB_URL=${VITE_FLUTTER_WEB_URL}
 RUN npm run build
 
 # Stage 2: Serve via Nginx

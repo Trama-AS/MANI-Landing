@@ -1,5 +1,7 @@
 import React from 'react';
 import { useApp } from '../../../context/AppContext';
+import { formatearCop } from '../../../utils/estimator';
+import { rutaFlutter } from '../../../utils/flutterRoutes';
 import { Card } from '../../common/Card';
 import { Button } from '../../common/Button';
 import { Badge } from '../../common/Badge';
@@ -11,7 +13,6 @@ import {
   KeyRound, 
   Paintbrush, 
   Clock, 
-  ArrowRight,
   ExternalLink
 } from 'lucide-react';
 
@@ -141,10 +142,13 @@ export const ServiceCard = ({ service }) => {
         >
           <div>
             <span style={{ fontSize: '0.75rem', color: 'var(--color-navy-muted)', display: 'block', fontWeight: '600' }}>
-              Modalidad
+              Tarifa base desde
             </span>
-            <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', fontWeight: '800', color: 'var(--color-navy)' }}>
-              A Domicilio
+            <span
+              data-testid={`tarifa-${service.id}`}
+              style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', fontWeight: '800', color: 'var(--color-navy)' }}
+            >
+              {formatearCop(service.tarifaBase)}
             </span>
           </div>
 
@@ -170,7 +174,7 @@ export const ServiceCard = ({ service }) => {
             size="sm"
             fullWidth
             iconRight={ExternalLink}
-            onClick={() => openFlutterApp(`?service=${service.id}`)}
+            onClick={() => openFlutterApp(rutaFlutter('login', { servicio: service.id }))}
           >
             Explorar
           </Button>
