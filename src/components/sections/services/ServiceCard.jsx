@@ -86,7 +86,7 @@ export const ServiceCard = ({ service }) => {
           style={{
             fontSize: '0.95rem',
             fontWeight: '700',
-            color: 'var(--color-red)',
+            color: 'var(--color-red-text)',
             marginBottom: '0.8rem',
             fontFamily: 'var(--font-body)'
           }}

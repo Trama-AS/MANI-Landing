@@ -16,6 +16,8 @@
   
   --color-red: #E4572E;
   --color-red-hover: #CC441C;
+  /* Naranja para TEXTO (SCRUM-1734, WCAG 1.4.3): 4,5:1 o más sobre blanco, crema y el fondo rojo claro. #E4572E queda para fondos y decoración. */
+  --color-red-text: #B33A14;
   --color-red-light: #FDE5DE;
 
   --color-green: #10B981;

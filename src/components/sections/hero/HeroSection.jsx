@@ -59,7 +59,7 @@ export const HeroSection = () => {
                 marginBottom: '1.2rem'
               }}
             >
-              SOLUCIONES PARA <span style={{ color: 'var(--color-red)' }}>TU HOGAR</span>
+              SOLUCIONES PARA <span style={{ color: 'var(--color-red-text)' }}>TU HOGAR</span>
             </h1>
 
             <p
@@ -163,7 +163,7 @@ export const HeroSection = () => {
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <Zap size={20} color="var(--color-yellow)" />
+                <Zap size={20} color="var(--color-navy)" fill="var(--color-yellow)" />
                 <span style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--color-navy)' }}>
                   Atención Inmediata
                 </span>
