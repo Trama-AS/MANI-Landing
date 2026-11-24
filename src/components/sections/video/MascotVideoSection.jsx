@@ -4,10 +4,13 @@ import { Card } from '../../common/Card';
 import { Button } from '../../common/Button';
 import { useApp } from '../../../context/AppContext';
 import { Play, Pause, Volume2, VolumeX, Sparkles, Zap, ExternalLink } from 'lucide-react';
+import { prefiereMovimientoReducido } from '../../../utils/movimientoReducido';
 
 export const MascotVideoSection = () => {
   const videoRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(true);
+  // SCRUM-1735: con «reducir movimiento» el video no arranca solo; quien quiera verlo lo reproduce con el botón.
+  const [sinMovimiento] = useState(() => prefiereMovimientoReducido());
+  const [isPlaying, setIsPlaying] = useState(!sinMovimiento);
   const [isMuted, setIsMuted] = useState(true);
   const { openFlutterApp } = useApp();
 
@@ -121,7 +124,7 @@ export const MascotVideoSection = () => {
               <video
                 ref={videoRef}
                 src="/assets/mani_walking.mp4"
-                autoPlay
+                autoPlay={!sinMovimiento}
                 loop
                 muted={isMuted}
                 playsInline

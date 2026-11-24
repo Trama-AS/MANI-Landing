@@ -235,7 +235,7 @@ export const QuickEstimatorModal = () => {
             </span>
             <span
               data-testid="rango-estimado"
-              style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: '800', color: 'var(--color-red)' }}
+              style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: '800', color: 'var(--color-red-text)' }}
             >
               {formatearCop(rango.min)} – {formatearCop(rango.max)}
             </span>
