@@ -16,6 +16,12 @@ export const RUTAS_FLUTTER = {
 export const PARAMETROS_CONTEXTO = ['servicio', 'urgencia', 'alcance', 'aliado'];
 
 /**
+ * Roles con entrada propia desde la landing (SCRUM-1647): «Soy cliente» y «Soy aliado». El login de Flutter lee `?rol=`
+ * y muestra el acceso de ese rol. Cualquier otro valor se descarta: un rol no se elige desde la URL.
+ */
+export const ROLES_ENTRADA = ['cliente', 'aliado'];
+
+/**
  * @param {keyof RUTAS_FLUTTER} destino
  * @param {Record<string, string | undefined>} [contexto]
  * @returns {string} ruta relativa a la URL base de Flutter Web, p. ej. `/login?servicio=plomeria`
@@ -30,6 +36,8 @@ export function rutaFlutter(destino, contexto = {}) {
       query.set(clave, String(valor).trim());
     }
   }
+  const rol = String(contexto.rol ?? '').trim().toLowerCase();
+  if (ROLES_ENTRADA.includes(rol)) query.set('rol', rol);
   const texto = query.toString();
   return texto ? `${ruta}?${texto}` : ruta;
 }

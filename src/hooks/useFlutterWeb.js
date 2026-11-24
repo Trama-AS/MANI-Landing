@@ -16,6 +16,11 @@ export const useFlutterWeb = () => {
     openFlutterApp(rutaFlutter('login', { servicio: serviceId, ...contexto }));
   };
 
+  /** «Soy cliente» / «Soy aliado»: el login de Flutter con el acceso de ese rol (SCRUM-1647). */
+  const goToRole = (rol) => {
+    openFlutterApp(rutaFlutter('login', { rol }));
+  };
+
   const goToExpert = (expertId) => {
     openFlutterApp(rutaFlutter('login', { aliado: expertId }));
   };
@@ -26,6 +31,7 @@ export const useFlutterWeb = () => {
     openFlutterApp,
     goToService,
     goToBooking,
+    goToRole,
     goToExpert,
     showToast
   };

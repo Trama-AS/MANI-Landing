@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../../../context/AppContext';
+import { useFlutterWeb } from '../../../hooks/useFlutterWeb';
 import { Button } from '../../common/Button';
 import { Badge } from '../../common/Badge';
 import { MascotCard } from './MascotCard';
@@ -10,11 +11,14 @@ import {
   ShieldCheck, 
   Clock, 
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  User,
+  Wrench
 } from 'lucide-react';
 
 export const HeroSection = () => {
   const { openFlutterApp, openEstimator } = useApp();
+  const { goToRole } = useFlutterWeb();
 
   return (
     <section
@@ -112,6 +116,27 @@ export const HeroSection = () => {
                 onClick={() => openEstimator('plomeria')}
               >
                 Solicitar Servicio
+              </Button>
+            </div>
+
+            {/* Entrada por rol (SCRUM-1647): cada rol llega al acceso de la app que le corresponde */}
+            <div
+              role="group"
+              aria-label="Entrar según tu rol"
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '0.75rem',
+                alignItems: 'center',
+                marginBottom: '2.5rem'
+              }}
+            >
+              <span style={{ fontWeight: '800', color: 'var(--color-navy)' }}>¿Cómo quieres entrar?</span>
+              <Button variant="outline" size="md" icon={User} onClick={() => goToRole('cliente')} title="Entrar a MANI como cliente">
+                Soy cliente
+              </Button>
+              <Button variant="navy" size="md" icon={Wrench} onClick={() => goToRole('aliado')} title="Entrar a MANI como aliado técnico">
+                Soy aliado
               </Button>
             </div>
 
