@@ -50,3 +50,27 @@ test('CA-3: las rutas del contrato existen en el router de MANI-Flutter', (t) =>
     assert.ok(router.includes(`path: '${destino}'`), destino);
   }
 });
+
+test('SCRUM-1647: «Soy cliente» y «Soy aliado» llevan al login con el rol', () => {
+  assert.equal(rutaFlutter('login', { rol: 'cliente' }), '/login?rol=cliente');
+  assert.equal(rutaFlutter('login', { rol: 'aliado' }), '/login?rol=aliado');
+});
+
+test('SCRUM-1647: el rol se normaliza y cualquier otro valor se descarta', () => {
+  assert.equal(rutaFlutter('login', { rol: ' Cliente ' }), '/login?rol=cliente');
+  for (const rol of ['admin', 'ADMIN_TENANT', 'plataforma', '', undefined, null, 'cliente&x=1']) {
+    assert.equal(rutaFlutter('login', { rol }), '/login', `rol ${JSON.stringify(rol)}`);
+  }
+});
+
+test('SCRUM-1647: el rol convive con el contexto del servicio', () => {
+  assert.equal(rutaFlutter('login', { servicio: 'plomeria', rol: 'cliente' }), '/login?servicio=plomeria&rol=cliente');
+});
+
+test('SCRUM-1647: el héroe de la landing tiene «Soy cliente» y «Soy aliado»', () => {
+  const heroe = readFileSync(new URL('../src/components/sections/hero/HeroSection.jsx', import.meta.url), 'utf8');
+  assert.match(heroe, /goToRole\('cliente'\)/);
+  assert.match(heroe, /goToRole\('aliado'\)/);
+  assert.match(heroe, /Soy cliente/);
+  assert.match(heroe, /Soy aliado/);
+});
