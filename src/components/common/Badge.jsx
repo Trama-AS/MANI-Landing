@@ -18,7 +18,7 @@ export const Badge = ({
       case 'red':
         return {
           backgroundColor: 'var(--color-red-light)',
-          color: 'var(--color-red)',
+          color: 'var(--color-red-text)',
           borderColor: 'var(--color-red)'
         };
       case 'navy':

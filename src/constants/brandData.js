@@ -13,7 +13,8 @@ export const BRAND_VALUES = [
     description: 'Filtros rigurosos de antecedentes, pruebas técnicas y validación de identidad para que tengas total tranquilidad en tu casa.',
     iconName: 'ShieldCheck',
     badge: '100% Verificados',
-    accentColor: '#1B2A4A'
+    accentColor: '#1B2A4A',
+    textColor: '#1B2A4A'
   },
   {
     id: 'agil',
@@ -22,7 +23,9 @@ export const BRAND_VALUES = [
     description: 'Reserva en menos de 2 minutos. Asignación inmediata y seguimiento en tiempo real con tiempos estimados claros.',
     iconName: 'Zap',
     badge: 'Respuesta < 30 min',
-    accentColor: '#F2B705'
+    accentColor: '#F2B705',
+    // El amarillo es de decoración e iconos: como texto sobre fondo claro da 1,8:1 (SCRUM-1734).
+    textColor: '#1B2A4A'
   },
   {
     id: 'cercano',
@@ -31,7 +34,9 @@ export const BRAND_VALUES = [
     description: 'Atención personalizada, lenguaje claro y soporte directo antes, durante y después de cada servicio.',
     iconName: 'HeartHandshake',
     badge: 'Atención 5 Estrellas',
-    accentColor: '#E4572E'
+    accentColor: '#E4572E',
+    // Naranja oscuro para texto (4,5:1 o más sobre blanco); #E4572E queda para el icono.
+    textColor: '#B33A14'
   }
 ];
 

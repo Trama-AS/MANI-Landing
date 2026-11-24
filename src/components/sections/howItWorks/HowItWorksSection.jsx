@@ -138,7 +138,7 @@ export const HowItWorksSection = () => {
                     style={{
                       fontSize: '0.9rem',
                       fontWeight: '700',
-                      color: 'var(--color-red)',
+                      color: 'var(--color-red-text)',
                       marginBottom: '1rem',
                       fontFamily: 'var(--font-body)'
                     }}

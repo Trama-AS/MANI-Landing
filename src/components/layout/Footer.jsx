@@ -200,7 +200,7 @@ export const Footer = () => {
             alignItems: 'center',
             justifyContent: 'space-between',
             gap: '1rem',
-            color: '#64748B',
+            color: '#94A3B8',
             fontSize: '0.85rem'
           }}
         >
