@@ -19,8 +19,9 @@ export const Button = ({
   const getVariantStyles = () => {
     switch (variant) {
       case 'primary':
+        // Rojo oscuro de la paleta: con texto blanco da 4,76:1 (AA pide 4,5:1). El rojo base da 3,68:1 (SCRUM-1721).
         return {
-          backgroundColor: 'var(--color-red)',
+          backgroundColor: 'var(--color-red-hover)',
           color: '#FFFFFF',
           border: 'var(--border-thick)',
           boxShadow: 'var(--shadow-md)'

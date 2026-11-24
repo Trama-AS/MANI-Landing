@@ -16,6 +16,8 @@
   
   --color-red: #E4572E;
   --color-red-hover: #CC441C;
+  /* Naranja para TEXTO (SCRUM-1734, WCAG 1.4.3): 4,5:1 o más sobre blanco, crema y el fondo rojo claro. #E4572E queda para fondos y decoración. */
+  --color-red-text: #B33A14;
   --color-red-light: #FDE5DE;
 
   --color-green: #10B981;
@@ -167,4 +169,23 @@ img, video {
 
 .animate-pulse-subtle {
   animation: pulseSubtle 3s ease-in-out infinite;
+}
+
+/* Movimiento reducido (SCRUM-1735, WCAG 2.3.3): con la preferencia del sistema activa no hay animaciones, transiciones
+   ni desplazamiento suave. El video de la mascota tampoco arranca solo (MascotVideoSection). */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
 }

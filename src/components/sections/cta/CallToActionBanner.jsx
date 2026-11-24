@@ -25,7 +25,7 @@ export const CallToActionBanner = () => {
           }}
         >
           {/* Badge superior */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'var(--color-red)', color: 'white', padding: '0.4rem 1.2rem', borderRadius: 'var(--radius-pill)', border: '2px solid white', fontFamily: 'var(--font-display)', fontWeight: '700', fontSize: '0.9rem', marginBottom: '1.5rem', textTransform: 'uppercase', boxShadow: '2px 2px 0px rgba(0,0,0,0.3)' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'var(--color-red-hover)', color: 'white', padding: '0.4rem 1.2rem', borderRadius: 'var(--radius-pill)', border: '2px solid white', fontFamily: 'var(--font-display)', fontWeight: '700', fontSize: '0.9rem', marginBottom: '1.5rem', textTransform: 'uppercase', boxShadow: '2px 2px 0px rgba(0,0,0,0.3)' }}>
             <Zap size={16} />
             <span>Disponible Ahora en Tu Ciudad</span>
           </div>

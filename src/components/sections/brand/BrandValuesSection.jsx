@@ -98,7 +98,7 @@ export const BrandValuesSection = () => {
                   style={{
                     fontSize: '1rem',
                     fontWeight: '700',
-                    color: val.accentColor,
+                    color: val.textColor ?? val.accentColor,
                     marginBottom: '1rem',
                     fontFamily: 'var(--font-body)'
                   }}

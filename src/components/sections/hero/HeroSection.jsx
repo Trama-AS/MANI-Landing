@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../../../context/AppContext';
+import { useFlutterWeb } from '../../../hooks/useFlutterWeb';
 import { Button } from '../../common/Button';
 import { Badge } from '../../common/Badge';
 import { MascotCard } from './MascotCard';
@@ -10,11 +11,14 @@ import {
   ShieldCheck, 
   Clock, 
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  User,
+  Wrench
 } from 'lucide-react';
 
 export const HeroSection = () => {
   const { openFlutterApp, openEstimator } = useApp();
+  const { goToRole } = useFlutterWeb();
 
   return (
     <section
@@ -55,7 +59,7 @@ export const HeroSection = () => {
                 marginBottom: '1.2rem'
               }}
             >
-              SOLUCIONES PARA <span style={{ color: 'var(--color-red)' }}>TU HOGAR</span>
+              SOLUCIONES PARA <span style={{ color: 'var(--color-red-text)' }}>TU HOGAR</span>
             </h1>
 
             <p
@@ -115,6 +119,27 @@ export const HeroSection = () => {
               </Button>
             </div>
 
+            {/* Entrada por rol (SCRUM-1647): cada rol llega al acceso de la app que le corresponde */}
+            <div
+              role="group"
+              aria-label="Entrar según tu rol"
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '0.75rem',
+                alignItems: 'center',
+                marginBottom: '2.5rem'
+              }}
+            >
+              <span style={{ fontWeight: '800', color: 'var(--color-navy)' }}>¿Cómo quieres entrar?</span>
+              <Button variant="outline" size="md" icon={User} onClick={() => goToRole('cliente')} title="Entrar a MANI como cliente">
+                Soy cliente
+              </Button>
+              <Button variant="navy" size="md" icon={Wrench} onClick={() => goToRole('aliado')} title="Entrar a MANI como aliado técnico">
+                Soy aliado
+              </Button>
+            </div>
+
             {/* Garantías Rápidas en fila */}
             <div
               style={{
@@ -138,7 +163,7 @@ export const HeroSection = () => {
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <Zap size={20} color="var(--color-yellow)" />
+                <Zap size={20} color="var(--color-navy)" fill="var(--color-yellow)" />
                 <span style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--color-navy)' }}>
                   Atención Inmediata
                 </span>

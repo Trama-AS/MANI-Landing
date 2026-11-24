@@ -47,7 +47,7 @@ export const ExpertCard = ({ expert }) => {
                 {expert.name}
               </h3>
             </div>
-            <span style={{ fontSize: '0.85rem', color: 'var(--color-red)', fontWeight: '700' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--color-red-text)', fontWeight: '700' }}>
               {expert.role}
             </span>
 
